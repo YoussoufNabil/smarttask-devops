@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:16-alpine
+    container_name: database
+    environment:
+      POSTGRES_DB: smarttask
+      POSTGRES_USER: smarttask
+      POSTGRES_PASSWORD: smarttaskpass
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - smarttask-network
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    image: smarttask-backend:dev
+    container_name: backend
+    environment:
+      DB_HOST: database
+      DB_PORT: 5432
+      POSTGRES_DB: smarttask
+      POSTGRES_USER: smarttask
+      POSTGRES_PASSWORD: smarttaskpass
+    depends_on:
+      - database
+    networks:
+      - smarttask-network
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    image: smarttask-frontend:dev
+    container_name: smarttask-frontend
+    depends_on:
+      - backend
+    networks:
+      - smarttask-network
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+networks:
+  smarttask-network:
+    driver: bridge
+
+volumes:
+  db_data:

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartTask</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>SmartTask</h1>
+      <p>Gestion simple des tâches - démonstration DevOps.</p>
+    </header>
+    <section class="card">
+      <form id="taskForm">
+        <input id="title" type="text" placeholder="Nouvelle tâche" required maxlength="120" />
+        <button type="submit">Ajouter</button>
+      </form>
+    </section>
+    <section class="card">
+      <div class="section-head">
+        <h2>Liste des tâches</h2>
+        <button id="refresh" type="button">Actualiser</button>
+      </div>
+      <div id="status"></div>
+      <ul id="tasks"></ul>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
