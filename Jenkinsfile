@@ -1,11 +1,10 @@
 pipeline {
-  agent { label 'docker' }
+  agent any
 
   environment {
     REGISTRY = 'docker.io'
     IMAGE_TAG = "${BUILD_NUMBER}"
-    // Remplacer par l'identifiant Docker Hub utilisé dans Jenkins.
-    DOCKERHUB_NAMESPACE = 'CHANGE_ME'
+    DOCKERHUB_NAMESPACE = 'ynabil13'
   }
 
   stages {
@@ -24,23 +23,17 @@ pipeline {
         sh 'docker tag $DOCKERHUB_NAMESPACE/smarttask-backend:$IMAGE_TAG $DOCKERHUB_NAMESPACE/smarttask-backend:latest'
       }
     }
-    stage('Login Registry') {
+    stage('Push') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-          sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+        script {
+          docker.withRegistry('', 'docker-hub-credentials') {
+            sh 'docker push $DOCKERHUB_NAMESPACE/smarttask-frontend:$IMAGE_TAG'
+            sh 'docker push $DOCKERHUB_NAMESPACE/smarttask-frontend:latest'
+            sh 'docker push $DOCKERHUB_NAMESPACE/smarttask-backend:$IMAGE_TAG'
+            sh 'docker push $DOCKERHUB_NAMESPACE/smarttask-backend:latest'
+          }
         }
       }
     }
-    stage('Push') {
-      steps {
-        sh 'docker push $DOCKERHUB_NAMESPACE/smarttask-frontend:$IMAGE_TAG'
-        sh 'docker push $DOCKERHUB_NAMESPACE/smarttask-frontend:latest'
-        sh 'docker push $DOCKERHUB_NAMESPACE/smarttask-backend:$IMAGE_TAG'
-        sh 'docker push $DOCKERHUB_NAMESPACE/smarttask-backend:latest'
-      }
-    }
-  }
-  post {
-    always { sh 'docker logout || true' }
   }
 }
