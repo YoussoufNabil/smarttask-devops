@@ -4,7 +4,7 @@ pipeline {
   environment {
     REGISTRY = 'docker.io'
     IMAGE_TAG = "${BUILD_NUMBER}"
-    DOCKERHUB_NAMESPACE = 'YoussoufNabil'
+    DOCKERHUB_NAMESPACE = 'ynabil13'
   }
 
   stages {
